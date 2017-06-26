@@ -23,21 +23,17 @@ end
 function _M.from_iam_role(role_name, host)
     host = host or '169.254.169.254'
     local httpc = http.new()
-    local res, err = httpc:request('http://' .. host .. '/latest/meta-data/iam/security-credentials/' .. role_name)
+    local ok, code, headers, status, b = httpc:request('http://' .. host .. '/latest/meta-data/iam/security-credentials/' .. role_name)
 
-    if not res then
-        return nil, err
-    end
-
-    if res.status == 404 then
+    if status == 404 then
         return nil, 'iam role not found'
     end
 
-    if res.status ~= 200 then
-        return nil, res.body
+    if status ~= 200 then
+        return nil, res.b
     end
 
-    local body = json.decode(res.body)
+    local body = json.decode(b)
 
     return {
         key = body['AccessKeyId'],
