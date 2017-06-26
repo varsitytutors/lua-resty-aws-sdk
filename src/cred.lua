@@ -23,7 +23,7 @@ end
 function _M.from_iam_role(role_name, host)
     host = host or '169.254.169.254'
     local httpc = http.new()
-    local res, err = httpc:request_uri('http://' .. host .. '/latest/meta-data/iam/security-credentials/' .. role_name)
+    local res, err = httpc:request('http://' .. host .. '/latest/meta-data/iam/security-credentials/' .. role_name)
 
     if not res then
         return nil, err
